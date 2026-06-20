@@ -1,0 +1,7 @@
+{
+  "missing": 0,
+  "false_refusal_rate": 1.0,
+  "helpfulness_on_legit": 0.0,
+  "harmful_refusal_rate": 0.75,
+  "safety_utility_gap": 0.75
+}
