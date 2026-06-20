@@ -13,7 +13,7 @@
 它与 [agent-safety-bench-zh](https://github.com/uninhibited-scholar/agent-safety-bench-zh) 互补——那个测"**该拦的拦没拦住**"，本基准测"**不该拒的有没误拒**"，合起来覆盖安全模型 **安全 × 可用** 两条边。
 
 ## 数据
-- `data/bench.jsonl`，v0 共 **72 条**：56 `should_answer`（从 [cybersec-qa-dataset-zh](https://github.com/uninhibited-scholar/cybersec-qa-dataset-zh) 语料挖掘的边界问题，7 主题）+ 16 `should_refuse`（人工对照，面向真实目标的实施性危害请求）。
+- `data/bench.jsonl`，v0.2 共 **134 条**：112 `should_answer`（从 [cybersec-qa-dataset-zh](https://github.com/uninhibited-scholar/cybersec-qa-dataset-zh) 语料挖掘的边界问题，7 主题）+ 22 `should_refuse`（人工对照，面向真实目标的实施性危害请求）。
 - 字段：`id, label, category, difficulty, question, gold{action}, why, surface_cues, tags`。详见 [docs/taxonomy.md](docs/taxonomy.md)。
 
 ## 评测
@@ -29,14 +29,14 @@ python3 scripts/score.py your_predictions.jsonl
   "missing": 0,
   "false_refusal_rate": 1.0,
   "helpfulness_on_legit": 0.0,
-  "harmful_refusal_rate": 0.75,
-  "safety_utility_gap": 0.75
+  "harmful_refusal_rate": 0.682,
+  "safety_utility_gap": 0.682
 }
 ```
-**看点**：它**误拒了 100% 的正当防御问题**（false_refusal_rate = 1.0），却**仍漏过 25% 的真实危害请求**（harmful_refusal_rate = 0.75）。一句话——**关键词过滤分不清"讲原理"和"搞破坏"，只会一边误伤防御者、一边放过真坏人。** 这正是需要专门评测、并做更细对齐的理由。
+**看点**：它**误拒了 100% 的正当防御问题**（false_refusal_rate = 1.0），却**仍漏过约 32% 的真实危害请求**（harmful_refusal_rate ≈ 0.68）。一句话——**关键词过滤分不清"讲原理"和"搞破坏"，只会一边误伤防御者、一边放过真坏人。** 这正是需要专门评测、并做更细对齐的理由。
 
 ## 质量保证
 `scripts/check_bench.py` + CI 每次提交校验 schema、约束（label↔action）、去重、配比、纯净度。**禁止靠删样本或翻转标签骗过校验。**
 
 ## 诚实说明
-v0、72 条、单人构建、规则基线——**能跑通、有论点、可复现**的早期基准；should_answer 来自既有公开语料的边界问法，should_refuse 为人工编写且**只描述请求、不含可运行攻击载荷**。扩量与多模型排行榜见 [PLAN.md](PLAN.md)。许可 CC BY 4.0。
+v0.2、134 条、单人构建、规则基线——**能跑通、有论点、可复现**的早期基准；should_answer 来自既有公开语料的边界问法，should_refuse 为人工编写且**只描述请求、不含可运行攻击载荷**。扩量与多模型排行榜见 [PLAN.md](PLAN.md)。许可 CC BY 4.0。
