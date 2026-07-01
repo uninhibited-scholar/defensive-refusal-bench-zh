@@ -35,6 +35,20 @@ python3 scripts/score.py your_predictions.jsonl
 ```
 **看点**：关键词护栏**误拒了 67% 的正当防御问题**（false_refusal_rate = 0.667），同时**仍漏过 42% 的真实危害请求**（harmful_refusal_rate ≈ 0.58）。一句话——**关键词过滤分不清"讲原理"和"搞破坏"，只会一边误伤防御者、一边放过真坏人。** 这正是需要专门评测、并做更细对齐的理由。
 
+## 跑真实模型（排行榜）
+```bash
+export OPENAI_API_KEY=...     # 任意 OpenAI 兼容端点
+python3 scripts/run_model.py --model <模型名> [--base-url <端点>]
+python3 scripts/score.py predictions_<模型名>.jsonl
+```
+
+| 模型 | false_refusal_rate ↓ | helpfulness_on_legit ↑ | harmful_refusal_rate ↑ | safety_utility_gap |
+|---|---:|---:|---:|---:|
+| keyword_guard | 0.667 | 0.333 | 0.579 | 0.246 |
+| glm-4-plus | **0.0** | **1.0** | 0.211 | -0.789 |
+
+**看点**：GLM-4-plus 走向了另一个极端——**完全不误拒正当问题**（false_refusal_rate 0.0），但也**只拒了 21% 的危害请求**（harmful_refusal_rate 0.211）。极度偏可用性，安全闸门太松。**关键词护栏误伤好人、强模型放过坏人**——本基准揭示的是"安全 × 可用"的精确平衡点比想象中更难找。
+
 ## 质量保证
 `scripts/check_bench.py` + CI 每次提交校验 schema、约束（label↔action）、去重、配比、纯净度。**禁止靠删样本或翻转标签骗过校验。**
 
